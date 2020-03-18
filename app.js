@@ -9,13 +9,20 @@ const dataFind = () => {
     if (error) {
       console.log('Error: ' + error)
     } else {
-      console.log(response.body.rates.VEF)
+      const date = new Date(Date.UTC(process.argv[2], process.argv[3], process.argv[4]));
+      // const date = dateGiven.getTime() / 1000
+
+      const dataDay = date.getFullYear() + '-' + ("0" + date.getMonth()).slice(-2) + '-' + ("0" + date.getDate()).slice(-2)
+      fs.appendFile('./data.txt', dataDay + ' ' + response.body.rates.VEF + '\n' , (e) => {
+        if (e) {
+          console.log("error")
+        } else {
+          console.log("data was appended?")
+        }
+      })
       
     }
   })
 }
 
 dataFind()
-
-
-// VEF Venezuelan Bolívar Fuerte
