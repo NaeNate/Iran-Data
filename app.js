@@ -3,7 +3,6 @@ const request = require("request")
 const jsDay = 86400000
 const id = "6db149d34b424c659d4405257d108aeb"
 const today = new Date()
-let flag = false
 const year = process.argv[2]
 const month = process.argv[3] // 01 === Feb
 const day = process.argv[4]
