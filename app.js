@@ -3,13 +3,11 @@ const request = require("request")
 const jsDay = 86400000
 const id = "6db149d34b424c659d4405257d108aeb"
 const today = new Date()
-const year = process.argv[2]
-const month = process.argv[3] // 01 === Feb
-const day = process.argv[4]
-const daysAgo = process.argv[5] || 3
-const currency = process.argv[6] || "GBP"
-
-console.log(today)
+const year = process.argv[2] || today.getFullYear()
+const month = process.argv[3] || today.getMonth()
+const day = process.argv[4] || today.getDate()
+const daysAgo = process.argv[5] || 2
+const currency = process.argv[6] || "CHF"
 
 const convertDateToJSDateObject = function() {
   const JSDateObject = new Date(year, month, day)
@@ -32,15 +30,13 @@ const convertToJSDateObject = function(JSTimestamp) {
   return javascriptDateObject
 }
 
-const pullDatesFromJSDateObject = function(JSdateObj) {
+const pullDatesFromJSDateObject = function(JSdateObj) { 
   const date =
     JSdateObj.getFullYear() + "-" + ("0" + JSdateObj.getMonth()).slice(-2) + "-" + ("0" + JSdateObj.getDate()).slice(-2)
     return date
 }
 
 const requestData = function(timeStamp) {
-  // date is a jsTimestamp
-  // need to convert to jsDateObject
   var JSdateObject = convertToJSDateObject(timeStamp)
   var date = pullDatesFromJSDateObject(JSdateObject)
 
@@ -51,23 +47,14 @@ const requestData = function(timeStamp) {
     if (e) {
       console.log("Error: " + e)
     } else {
-      console.log(response.body.rates.GBP)
-      const fileString = (date + ' ' + response.body.rates.GBP + '\n')
-
-      // fs.appendFile('./data.txt', date + ' ' + response.body.rates.GBP + '\n', (e) => {
+      let yesterday = response.body.rates[currency]
+      console.log(response.body.rates[currency])
+      const fileString = (date + ' ' + currency + ' ' + response.body.rates[currency] + ' ' +  + '\n')
       fs.appendFile('./data.txt', fileString, (e) => {
-
         if (e) {
           console.log(e)
-        } else {
-          console.log('Data was entered')
         }
       })
-
-
-
-
-
     }
   })
 }
@@ -77,38 +64,8 @@ function monster() {
   
   for (var i = 0; i < daysAgo; i++) {
     requestData(timeStampEarliestDay)
-    // console.log(timeStampEarliestDay)
     timeStampEarliestDay = timeStampEarliestDay + jsDay
   }
 }
 
 monster()
-
-
-/*
-// 'a' flag stands for 'append'
-const log = fs.createWriteStream('log.txt', { flags: 'a' });
-
-// on new log entry ->
-log.write('new entry\n');
-
-// you can skip closing the stream if you want it to be opened while
-// a program runs, then file handle will be closed
-log.end();
-*/
-
-// convertToJSDateObject(1575158400000)
-// requestData(pullDatesFromJSDateObject(convertToJSDateObject(1574726400000)))
-
-// convertEarliestDayTimestampToJSDateObject()
-// convertDateToJSDateObject()
-
-/*
-CLI app.js 2019 03 10 5 VEF
-Convert CLI data to a JSdateObj
-Convrt JSdObj into JS Timestamp
-subtract (daysAgo * jsDay) from JS Timestamp to get earliest JSTimestamp
-
-Monster Function: take in javascript timestamp, turn the timestamp into a javascript date object, pull the year, month, and day from the object, request from the api, append data to text file, 
-
-*/
