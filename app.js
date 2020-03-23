@@ -6,8 +6,8 @@ const today = new Date()
 const year = process.argv[2] || today.getFullYear()
 const month = process.argv[3] || today.getMonth()
 const day = process.argv[4] || today.getDate()
-const daysAgo = process.argv[5] || 2
-const currency = process.argv[6] || "CHF"
+const daysAgo = process.argv[5] || 30
+const currency = process.argv[6] || "IRR"
 
 const convertDateToJSDateObject = function() {
   const JSDateObject = new Date(year, month, day)
@@ -49,7 +49,7 @@ const requestData = function(timeStamp) {
     } else {
       let yesterday = response.body.rates[currency]
       console.log(response.body.rates[currency])
-      const fileString = (date + ' ' + currency + ' ' + response.body.rates[currency] + ' ' +  + '\n')
+      const fileString = (date + ' ' + currency + ' ' + response.body.rates[currency] + '\n')
       fs.appendFile('./data.txt', fileString, (e) => {
         if (e) {
           console.log(e)
@@ -59,13 +59,39 @@ const requestData = function(timeStamp) {
   })
 }
 
+
 function monster() {
+
   let timeStampEarliestDay = findTimestampForEarliestDay()
-  
+
   for (var i = 0; i < daysAgo; i++) {
     requestData(timeStampEarliestDay)
     timeStampEarliestDay = timeStampEarliestDay + jsDay
   }
+
+//   async function* asyncGenerator() {
+//     let i = 0;
+//     while (i < daysAgo) {
+//       yield i++;
+//     }
+//   }
+
+//   (async function () {
+//     for await (let num of asyncGenerator()) {
+//     requestData(timeStampEarliestDay)
+//     timeStampEarliestDay = timeStampEarliestDay + jsDay
+//     }
+// })();
 }
 
-monster()
+monster();
+
+/*
+1. Fix app to pass data to text file in the order it was called.
+https://blog.risingstack.com/mastering-async-await-in-nodejs/
+
+2. add headers to text 
+
+3. addd to CLI date interval. 
+
+*/
