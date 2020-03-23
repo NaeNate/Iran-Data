@@ -6,7 +6,7 @@ const today = new Date()
 const year = process.argv[2] || today.getFullYear()
 const month = process.argv[3] || today.getMonth()
 const day = process.argv[4] || today.getDate()
-const daysAgo = process.argv[5] || 30
+const daysAgo = process.argv[5] || 3
 const currency = process.argv[6] || "IRR"
 
 const convertDateToJSDateObject = function() {
